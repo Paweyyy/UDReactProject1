@@ -2,46 +2,38 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { search } from "../BooksAPI";
 import Book from "./book";
-import { update } from "../BooksAPI";
 
-const SearchPage = () => {
+const SearchPage = ({ books, moveBook }) => {
   const [searchTerm, setSearchTerm] = useState("")
-  const [books, setBooks] = useState([])
+  const [searchBooks, setSearchBooks] = useState([])
 
   useEffect(() => {
-    const searchBook = async () => {
+    queryBooks(searchTerm)
+  },[searchTerm, books])
+
+  const queryBooks = async (searchTerm) => {
+    let response = [];
+    if(searchTerm !== ""){
       const res = await search(searchTerm, 5);
       if(!res.error){
-        console.log(res)
-        setBooks(res)
+        let bks = [...res]
+        let ret = bks.map(bk1 => {
+          let bk2 = books.filter(bk2 => bk1.id === bk2.id)[0]
+          if(!bk2){
+            bk1.shelf = "none"
+          }
+          return bk2 ? bk2 : bk1
+        })
+        response = ret;
       }
     }
-    if(searchTerm === ""){
-      setBooks([])
-    }else{
-      searchBook()
-    }
-  },[searchTerm])
+    setSearchBooks(response)
+  }
 
   const handleChange = e => {
     e.preventDefault(); 
-    console.log(e.target.value)
     setSearchTerm(e.target.value)
   }
-
-  const moveBook = async (key, value) => {
-    console.log(key, value)
-    const book = { id: key }
-    const res  = await update(book, value)
-    var booksCpy = [...books]
-    const ret = booksCpy.map(book => {
-        if(book.id === key){
-            book.shelf = value
-        }
-        return book
-    })
-    setBooks(ret)
-}
 
   return(
     <div className="app">
@@ -59,13 +51,14 @@ const SearchPage = () => {
         <div className="search-books-results">
           <ol className="books-grid">
             {
-              books.map(book => {
+              searchBooks.map((book, idx) => {
                 return(<Book 
                   title={book.title}
                   id={book.id}
+                  key={idx}
                   authors={book.authors} 
                   imageUrl={book.imageLinks ? book.imageLinks.smallThumbnail : ""}
-                  shelf={book.shelf ? book.shelf : "none"}
+                  shelf={book.shelf}
                   isSearch={true}
                   moveBook={moveBook}
                 />)

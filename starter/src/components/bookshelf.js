@@ -1,10 +1,6 @@
 import Book from "./book";
-import { useEffect, useState } from "react";
 
 const Bookshelf = ({title, books, moveBook, shelf}) => {
-    useEffect(() => {
-
-    },[books])
 
     return (
         <div className="bookshelf">
@@ -15,11 +11,11 @@ const Bookshelf = ({title, books, moveBook, shelf}) => {
                 books.map((book, idx) => {
                     return (
                         <Book
-                        key={idx}
                         id={book.id}
+                        key={idx}
                         imageUrl={book.imageLinks ? book.imageLinks.smallThumbnail : ""}
                         title={book.title}
-                        authors={books.authors}
+                        authors={book.authors}
                         moveBook={moveBook}
                         shelf={book.shelf ? book.shelf : "none"}
                         />
