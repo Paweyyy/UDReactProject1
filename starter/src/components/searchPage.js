@@ -8,27 +8,27 @@ const SearchPage = ({ books, moveBook }) => {
   const [searchBooks, setSearchBooks] = useState([])
 
   useEffect(() => {
+    const queryBooks = async (searchTerm) => {
+      let response = [];
+      if(searchTerm !== ""){
+        const res = await search(searchTerm, 5);
+        if(!res.error){
+          let bks = [...res]
+          let ret = bks.map(bk1 => {
+            let bk2 = books.filter(bk2 => bk1.id === bk2.id)[0]
+            if(!bk2){
+              bk1.shelf = "none"
+            }
+            return bk2 ? bk2 : bk1
+          })
+          response = ret;
+        }
+      }
+      setSearchBooks(response)
+    }
+    
     queryBooks(searchTerm)
   },[searchTerm, books])
-
-  const queryBooks = async (searchTerm) => {
-    let response = [];
-    if(searchTerm !== ""){
-      const res = await search(searchTerm, 5);
-      if(!res.error){
-        let bks = [...res]
-        let ret = bks.map(bk1 => {
-          let bk2 = books.filter(bk2 => bk1.id === bk2.id)[0]
-          if(!bk2){
-            bk1.shelf = "none"
-          }
-          return bk2 ? bk2 : bk1
-        })
-        response = ret;
-      }
-    }
-    setSearchBooks(response)
-  }
 
   const handleChange = e => {
     e.preventDefault(); 

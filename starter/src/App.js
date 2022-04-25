@@ -3,7 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import SearchPage from "./components/searchPage";
 import BookList from "./components/booklist";
 import { useState, useEffect } from "react";
-import { getAll, update, search } from './BooksAPI';
+import { getAll, update } from './BooksAPI';
 
 function App() {
   const [books, setBooks] = useState([])
