@@ -51,7 +51,7 @@ const SearchPage = ({ books, moveBook }) => {
         <div className="search-books-results">
           <ol className="books-grid">
             {
-              searchBooks && searchBooks.map((book, idx) => {
+              searchTerm && searchBooks.map((book, idx) => {
                 return(<Book 
                   title={book.title}
                   id={book.id}
